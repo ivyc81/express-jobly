@@ -8,7 +8,10 @@ const morgan = require("morgan");
 
 const app = express();
 
+const companiesRoutes = requre("./routes/companies");
+
 app.use(express.json());
+app.use("/companies", companiesRoutes);
 
 // add logging system
 app.use(morgan("tiny"));
