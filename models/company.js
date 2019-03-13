@@ -21,7 +21,14 @@ class Company {
     static async getSearch(params){
 
         const min = ["num_employees", Number(params.min_employees)];
-        const max = ["num_employees", params.max_employees];
+        const max = ["num_employees", Number(params.max_employees)];
+
+        if(min[1] && max[1]) {
+            if(min[1] > max[1]){
+                throw {message:"min must be smaller than max", status:400};
+            }
+        }
+
         const search = [["name", "handle"],params.search];
 
         const items = {min, max, search};

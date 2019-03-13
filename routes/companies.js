@@ -22,19 +22,6 @@ const companyEditSchema = require("../schemas/companyEdit.json");
  */
 router.get("", async function (req, res, next) {
     try {
-
-        req.query.min_employees ? req.query.min_employees = +req.query.min_employees : null
-
-        req.query.max_employees ? req.query.max_employees = +req.query.max_employees : null
-
-        const results = jsonschema.validate(req.query, companySearchSchema);
-
-        if (!results.valid) {
-            let errList = results.errors.map(err => err.stack);
-            let error = new ExpressError(errList, 400);
-            return next(error);
-        }
-
         let result;
 
         if (Object.keys(req.query).length) {
