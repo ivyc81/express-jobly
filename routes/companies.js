@@ -1,18 +1,14 @@
 const express = require("express");
 // const morgan = require("morgan");
-
 const router = new express.Router();
 
-const ExpressError = require("./helpers/expressError");
-// const Company = require("../models/company")
+const ExpressError = require("../helpers/expressError");
+const Company = require("../models/company")
 
 const jsonschema = require("jsonschema");
 const companySearchSchema = require('../schemas/companySearch.json');
 const companyCreateSchema = require("../schemas/companyCreate.json");
 const companyEditSchema = require("../schemas/companyEdit.json");
-
-
-app.use(express.json());
 
 // add logging system
 // app.use(morgan("tiny"));
@@ -24,7 +20,7 @@ app.use(express.json());
  * ?min_employees: companies with num_employees greater than param
  * ?max_employees: companies with num_employees less than param
  */
-router.get("", function (req, res, next) {
+router.get("", async function (req, res, next) {
     try {
         const results = jsonschema.validate(req.params, companySearchSchema);
 
@@ -35,7 +31,7 @@ router.get("", function (req, res, next) {
         }
 
         // call model function
-        const result = Company.getAll(req.params);
+        const result = await Company.getAll(req.params);
 
         return res.json({ "companies": result });
 
@@ -47,7 +43,7 @@ router.get("", function (req, res, next) {
 /**
  * Create a new company: {company: companyData}
  */
-router.post("", function (req, res, next) {
+router.post("", async function (req, res, next) {
     try {
         const results = jsonschema.validate(req.body, companyCreateSchema);
 
@@ -68,7 +64,7 @@ router.post("", function (req, res, next) {
 /**
  * Get one company with handle: {company: companyData}
  */
-router.get("/:handle", function (req, res, next) {
+router.get("/:handle", async function (req, res, next) {
     try {
         const company = await Company.getOne(req.params.handle);
 
@@ -81,7 +77,7 @@ router.get("/:handle", function (req, res, next) {
 /**
  * Update a company: {company: companyData}
  */
-router.patch("/:handle", function (req, res, next) {
+router.patch("/:handle", async function (req, res, next) {
     try {
         const results = jsonschema.validate(req.body, companyEditSchema);
 
@@ -101,7 +97,7 @@ router.patch("/:handle", function (req, res, next) {
 /**
  * Delete a company: {message: "Company deleted"}
  */
-router.delete("/:handle", function (req, res, next) {
+router.delete("/:handle", async function (req, res, next) {
     try {
         await Company.delete(req.params.handle);
 

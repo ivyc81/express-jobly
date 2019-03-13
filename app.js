@@ -8,7 +8,7 @@ const morgan = require("morgan");
 
 const app = express();
 
-const companiesRoutes = requre("./routes/companies");
+const companiesRoutes = require("./routes/companies");
 
 app.use(express.json());
 app.use("/companies", companiesRoutes);

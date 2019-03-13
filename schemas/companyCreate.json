@@ -6,7 +6,7 @@
   "title": "The Root Schema",
   "required": [
     "handle",
-    "name",
+    "name"
   ],
   "properties": {
     "handle": {
