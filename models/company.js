@@ -1,6 +1,7 @@
 /** Company calss for jobly */
 
 const db = require('../db');
+const searchQuery = require('../helpers/searchQuery');
 
 
 /** Company of the site. */
@@ -10,33 +11,24 @@ class Company {
 /**
  * get All company information that meets search term
  */
+    static async getAll(){
+        const result = await db.query(`SELECT name, handle FROM companies`);
 
-    static async getAll(params){
-        let query = `SELECT * FROM companies`;
-        const valArr = [];
+        return result.rows;
+    }
 
-        const search = params.search;
+    static async getSearch(params){
 
-        if(params.min_employee || params.min_employee){
-            const min_employee = params.min_employee || 0;
-            const max_employee = params.max_employee || 'Infinity';
-            query += ' WHERE num_employees > $1 AND num_employees::float < $2'
-            
-            valArr.push(min_employee);
-            valArr.push(max_employee);
+        const min = ["num_employees", params.min_employees];
+        const max = ["num_employees", params.max_employees];
+        const search = [["name", "handle"],params.search];
 
-            if(search){
-                query += ' AND (handle ILIKE $3 OR name ILIKE $3)';
-                valArr.push(`%${search}%`);
-            }
-        } else if(search){
-            query += ' WHERE handle ILIKE $1 OR name ILIKE $1';
-            valArr.push(`%${search}%`);
-        }
+        const item = {min, max, search};
+        const keys = ['handle', 'name'];
 
-        console.log("QUERY", query);
+        const { query, values } = searchQuery('companies', item, keys);
 
-        const result = await db.query(query, valArr);
+        const result = await db.query(query, values);
 
         return result.rows;
     }
