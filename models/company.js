@@ -19,8 +19,9 @@ class Company {
     }
 
     static async getSearch(params){
+        console.log(params)
 
-        const min = ["num_employees", params.min_employees];
+        const min = ["num_employees", Number(params.min_employees)];
         const max = ["num_employees", params.max_employees];
         const search = [["name", "handle"],params.search];
 
@@ -29,8 +30,9 @@ class Company {
 
         const { query, values } = searchQuery('companies', items, keys);
 
-        const result = await db.query(query, values);
+        console.log(query, values)
 
+        const result = await db.query(query, values);
         return result.rows;
     }
 

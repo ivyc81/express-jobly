@@ -22,7 +22,13 @@ const companyEditSchema = require("../schemas/companyEdit.json");
  */
 router.get("", async function (req, res, next) {
     try {
-        const results = jsonschema.validate(req.params, companySearchSchema);
+
+        req.query.min_employees ? req.query.min_employees = +req.query.min_employees : null
+
+        req.query.max_employees ? req.query.max_employees = +req.query.max_employees : null
+
+        console.log("FIRST", req.query)
+        const results = jsonschema.validate(req.query, companySearchSchema);
 
         if (!results.valid) {
             let errList = results.errors.map(err => err.stack);
@@ -30,8 +36,13 @@ router.get("", async function (req, res, next) {
             return next(error);
         }
 
-        // call model function
-        const result = await Company.getAll(req.params);
+        let result;
+
+        if (Object.keys(req.query).length) {
+            result = await Company.getSearch(req.query);
+        }else {
+            result = await Company.getAll();
+        }
 
         return res.json({ "companies": result });
 

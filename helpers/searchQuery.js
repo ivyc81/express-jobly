@@ -15,16 +15,19 @@ function sqlForSearch(table, items, keys){
     let query = `SELECT ${keysString} FROM ${table}`;
     const values = [];
 
-    if(items.min || items.max){
+    console.log("ITEMSMSSMS", items);
+
+    if(items.min[1] || items.max[1]){
         const col = items.min? items.min[0] : items.max[0];
-        const min = items.min? items.min[1] : 0;
-        const max = items.max? items.max[1] : 'Infinity';
+        const min = items.min[1]? items.min[1] : 0;    
+        const max = items.max[1]? items.max[1] : 'Infinity';
+        
         query += ` WHERE ${col}::float BETWEEN $1 AND $2`
 
         values.push(min);
         values.push(max);
 
-        if(items.search && items.search[1]){
+        if(items.search[1]){
             const search = items.search[1];
             const searchCols = items.search[0];
             query += ' AND'
@@ -35,7 +38,7 @@ function sqlForSearch(table, items, keys){
             query += ')';
             values.push(`%${search}%`);
         }
-    } else if(items.search && items.search[1]){
+    } else if(items.search[1]){
         const search = items.search[1];
         const searchCols = items.search[0];
         query += ` WHERE ${searchCols[0]} ILIKE $1`;
