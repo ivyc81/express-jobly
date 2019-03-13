@@ -3,18 +3,6 @@ process.env.NODE_ENV = "test";
 
 const sqlForPartialUpdate = require('../../helpers/partialUpdate');
 
-
-/** Unittest for sqlForPartialUpdate expect {query string, values}` */
-// describe("partialUpdate()", () => {
-//   it("should generate a proper partial update query with just 1 field",
-//       function () {
-
-//     // FIXME: write real tests!
-//     expect(false).toEqual(true);
-
-//   });
-// });
-
 describe("sqlForPartialUpdate", async function () {
     test("it returns the correct query string and values for updating db", function () {
         const table = "test";

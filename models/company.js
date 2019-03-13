@@ -24,10 +24,10 @@ class Company {
         const max = ["num_employees", params.max_employees];
         const search = [["name", "handle"],params.search];
 
-        const item = {min, max, search};
+        const items = {min, max, search};
         const keys = ['handle', 'name'];
 
-        const { query, values } = searchQuery('companies', item, keys);
+        const { query, values } = searchQuery('companies', items, keys);
 
         const result = await db.query(query, values);
 
