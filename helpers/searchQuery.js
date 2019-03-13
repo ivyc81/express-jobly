@@ -15,8 +15,6 @@ function sqlForSearch(table, items, keys){
     let query = `SELECT ${keysString} FROM ${table}`;
     const values = [];
 
-    console.log("ITEMSMSSMS", items);
-
     if(items.min[1] || items.max[1]){
         const col = items.min? items.min[0] : items.max[0];
         const min = items.min[1]? items.min[1] : 0;    

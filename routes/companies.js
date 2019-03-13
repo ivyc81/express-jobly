@@ -27,7 +27,6 @@ router.get("", async function (req, res, next) {
 
         req.query.max_employees ? req.query.max_employees = +req.query.max_employees : null
 
-        console.log("FIRST", req.query)
         const results = jsonschema.validate(req.query, companySearchSchema);
 
         if (!results.valid) {
