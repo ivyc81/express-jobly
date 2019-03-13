@@ -1,3 +1,10 @@
+
+process.env.NODE_ENV = "test";
+
+const sqlForPartialUpdate = require('../../helpers/partialUpdate');
+
+
+/** Unittest for sqlForPartialUpdate expect {query string, values}` */
 // describe("partialUpdate()", () => {
 //   it("should generate a proper partial update query with just 1 field",
 //       function () {
@@ -7,17 +14,6 @@
 
 //   });
 // });
-
-process.env.NODE_ENV = "test";
-// app imports
-// const app = require("../../app");
-// const db = require("../../db");
-
-
-const sqlForPartialUpdate = require('../../helpers/partialUpdate');
-
-
-/** Unittest for sqlForPartialUpdate expect {query string, values}` */
 
 describe("sqlForPartialUpdate", async function () {
     test("it returns the correct query string and values for updating db", function () {
