@@ -1,0 +1,29 @@
+{
+  "name": "rithm-express-jobly",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meowcodes/rithm-express-jobly.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meowcodes/rithm-express-jobly/issues"
+  },
+  "homepage": "https://github.com/meowcodes/rithm-express-jobly#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.4",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.0",
+    "pg": "^7.8.2"
+  },
+  "devDependencies": {
+    "supertest": "^3.1.0"
+  }
+}
