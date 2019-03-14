@@ -50,7 +50,7 @@ router.post("", async function (req, res, next) {
         }
 
         const company = await Company.create(req.body);
-        
+
         return res.status(201).json({ company });
     } catch (err) {
         if(err.constraint === 'companies_pkey'){
@@ -67,8 +67,11 @@ router.get("/:handle", async function (req, res, next) {
     try {
         const company = await Company.getOne(req.params.handle);
 
+        if(!company){
+            throw new ExpressError('Company not found', 400);
+        }
         // get all jobs in compnay
-        company.jobs = await Job.getFromCompany(req.params.handle)
+        company.jobs = await Job.getJobsFromCompany(req.params.handle);
 
         return res.json({ company });
     } catch (err) {
@@ -106,7 +109,7 @@ router.delete("/:handle", async function (req, res, next) {
         if(results.name){
             return res.json({message: "Company deleted"});
         }
-    
+
     } catch (err) {
         if(err instanceof TypeError){
             err = new ExpressError("Company not found", 400)

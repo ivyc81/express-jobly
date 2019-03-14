@@ -3,7 +3,8 @@ const express = require("express");
 const router = new express.Router();
 
 const ExpressError = require("../helpers/expressError");
-const Job = require("../models/job")
+const Job = require("../models/job");
+const Company = require("../models/company");
 
 const jsonschema = require("jsonschema");
 const jobCreateSchema = require("../schemas/jobCreate.json");
@@ -27,7 +28,7 @@ router.post("", async function (req, res, next) {
         }
 
         const job = await Job.create(req.body);
-        
+
         return res.status(201).json({ job });
     } catch (err) {
         return next(err);
@@ -64,6 +65,9 @@ router.get("", async function (req, res, next) {
 router.get("/:id", async function (req, res, next) {
     try {
         const job = await Job.getOne(req.params.id);
+        job.company = await Company.getOne(job.company_handle);
+
+        delete job.company_handle;
 
         return res.json({ job });
     } catch (err) {
@@ -98,10 +102,10 @@ router.delete("/:id", async function (req, res, next) {
     try {
         const results = await Job.delete(req.params.id);
 
-        if(results.name){
+        if(results.title){
             return res.json({message: "Job deleted"});
         }
-    
+
     } catch (err) {
         if(err instanceof TypeError){
             err = new ExpressError("Job not found", 400)

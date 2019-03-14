@@ -10,17 +10,20 @@ const sqlForPartialUpdate = require('../helpers/partialUpdate');
 
 class Company {
 
-/**
- * get All company information that meets search term
- */
-
-    
+    /**
+     * get All company information [{companyData},...]
+     */
 
     static async getAll(){
         const result = await db.query(`SELECT name, handle FROM companies`);
 
         return result.rows;
     }
+
+    /**
+     * get All company information that meets search term
+     * [{companyData},...]
+     */
 
     static async getSearch(params){
 
@@ -63,6 +66,10 @@ class Company {
         return result.rows;
     }
 
+    /**
+     * Create a company {companyData}
+     */
+
     static async create(data){
         const { handle, name, num_employees, description, logo_url } = data;
 
@@ -86,6 +93,10 @@ class Company {
         return result.rows[0];
     }
 
+    /**
+     * Get one company {companyData}
+     */
+
     static async getOne(handle) {
         const result = await db.query(`
             SELECT handle, name, num_employees, description, logo_url
@@ -97,6 +108,12 @@ class Company {
         return result.rows[0];
     }
 
+
+    /**
+     *  Updates company information
+     * {companyData}
+     */
+
     static async update(comHandle, data) {
         const table = "companies";
 
@@ -106,8 +123,8 @@ class Company {
         if(handle) {
             throw {message:"handle cannot be updated", status:400};
         }
-        const key = "handle"
-        const id = comHandle
+        const key = "handle";
+        const id = comHandle;
 
         const { query, values } = sqlForPartialUpdate(table, items, key, id, Company.safeCols);
 
@@ -115,6 +132,10 @@ class Company {
 
         return result.rows[0];
     }
+
+    /**
+     *  Deletes company {companyData}
+     */
 
     static async delete(handle) {
         const result = await db.query(`
