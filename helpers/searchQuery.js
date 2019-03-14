@@ -17,8 +17,9 @@ function sqlForSearch(table, items, keys){
 
     if(items.min[1] || items.max[1]) {
         const col = items.min[0];
-        const min = items.min[1]? items.min[1] : 0;    
-        const max = items.max[1]? items.max[1] : 'Infinity';
+        const min = items.min[1]? items.min[1] : 0;
+        // allow 0 as max
+        const max = !isNaN(items.max[1])? items.max[1] : 'Infinity';
         
         query += ` WHERE ${col}::float BETWEEN $1 AND $2`
 

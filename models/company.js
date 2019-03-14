@@ -1,7 +1,7 @@
 /** Company calss for jobly */
 
 const db = require('../db');
-const searchQuery = require('../helpers/searchQuery');
+const sqlForSearch = require('../helpers/searchQuery');
 const sqlForPartialUpdate = require('../helpers/partialUpdate');
 
 
@@ -20,8 +20,8 @@ class Company {
 
     static async getSearch(params){
 
-        const minVal = Number(params.min_employees);
-        const maxVal = Number(params.max_employees)
+        const minVal = params.min_employees || Number(params.min_employees);
+        const maxVal = params.max_employees || Number(params.max_employees)
 
         if(params.min_employees && isNaN(minVal)){
             throw {message:"min must be a number", status:400};
@@ -31,7 +31,7 @@ class Company {
             throw {message:"max must be a number", status:400};
         }
 
-        if(minVal && maxVal) {
+        if(!isNaN(minVal) && !isNaN(maxVal)) {
             if(minVal > maxVal){
                 throw {message:"min must be smaller than max", status:400};
             }
@@ -45,7 +45,7 @@ class Company {
         const items = {min, max, search};
         const keys = ['handle', 'name'];
 
-        const { query, values } = searchQuery('companies', items, keys);
+        const { query, values } = sqlForSearch('companies', items, keys);
 
         const result = await db.query(query, values);
         return result.rows;
@@ -87,7 +87,7 @@ class Company {
 
     static async update(comHandle, data) {
         const table = "companies";
-        
+
         // take handle out of data if exists
         const {handle, ... items} = data;
 

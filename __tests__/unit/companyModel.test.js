@@ -23,10 +23,9 @@ describe("Company.getAll()", function () {
         const result = await Company.getAll();
 
         expect(result).toEqual(expect.any(Array));
-        expect(result[0]).toEqual(expect.any(Object));
+        expect(result[0]).toEqual({FIXME});
         expect(result[0].name).toEqual("Test");
         expect(result[0].handle).toEqual("test");
-        // expect(result.values.length).toEqual(3);
     });
 });
 

@@ -25,7 +25,7 @@ describe("GET /", function () {
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.body.companies).toEqual(expect.any(Array));
+        expect(res.body.companies).toEqual([FIXME]);
         expect(res.body.companies.length).toEqual(1);
         expect(res.body.companies[0].name).toEqual("Test");
     });
