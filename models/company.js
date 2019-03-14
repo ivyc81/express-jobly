@@ -20,31 +20,39 @@ class Company {
 
     static async getSearch(params){
 
-        const minVal = params.min_employees || Number(params.min_employees);
-        const maxVal = params.max_employees || Number(params.max_employees)
+        const items = {};
+        const keys = ['handle', 'name'];
 
-        if(params.min_employees && isNaN(minVal)){
-            throw {message:"min must be a number", status:400};
+        // formatting for sqlForSearch
+        if(params.min_employees){
+            const minVal = Number(params.min_employees);
+            if(!minVal && minVal !== 0){
+                throw {message:"min must be a number", status:400};
+            } else {
+                items.min = {"searchCol": "num_employees", "searchVal": minVal};
+            }
         }
 
-        if(params.max_employees && isNaN(maxVal)){
-            throw {message:"max must be a number", status:400};
+        if(params.max_employees){
+            const maxVal = Number(params.max_employees);
+            if(!maxVal && maxVal !== 0){
+                throw {message:"max must be a number", status:400};
+            } else {
+                items.max = {"searchCol": "num_employees", "searchVal": maxVal};
+            }
         }
 
-        if(!isNaN(minVal) && !isNaN(maxVal)) {
-            if(minVal > maxVal){
+        if(items.min && items.max) {
+            if(items.min.searchVal > items.max.searchVal){
                 throw {message:"min must be smaller than max", status:400};
             }
         }
 
-        const min = ["num_employees", minVal];
-        const max = ["num_employees", maxVal];
+        if(params.search){
+            items.search = {"searchCol": ["name", "handle"],"searchVal": params.search};
+        }
 
-        const search = [["name", "handle"],params.search];
-
-        const items = {min, max, search};
-        const keys = ['handle', 'name'];
-
+        // getting query string and search values
         const { query, values } = sqlForSearch('companies', items, keys);
 
         const result = await db.query(query, values);

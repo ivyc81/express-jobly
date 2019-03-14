@@ -15,20 +15,24 @@ function sqlForSearch(table, items, keys){
     let query = `SELECT ${keysString} FROM ${table}`;
     const values = [];
 
-    if(items.min[1] || items.max[1]) {
-        const col = items.min[0];
-        const min = items.min[1]? items.min[1] : 0;
+    // checking if min or max was passed in
+    if(items.min || items.max) {
+        // getting the column for filtering by min/max
+        const col = items.min? items.min.searchCol : items.max.searchCol;
+        // getting the min if exist, if not set to 0
+        const min = items.min? items.min.searchVal : 0;
         // allow 0 as max
-        const max = !isNaN(items.max[1])? items.max[1] : 'Infinity';
-        
+        const max = items.max? items.max.searchVal : 'Infinity';
+
         query += ` WHERE ${col}::float BETWEEN $1 AND $2`
 
         values.push(min);
         values.push(max);
 
-        if(items.search[1]){
-            const search = items.search[1];
-            const searchCols = items.search[0];
+        // checking if search was passed in
+        if(items.search){
+            const search = items.search.searchVal;
+            const searchCols = items.search.searchCol;
             query += ' AND'
             query += ` (${searchCols[0]} ILIKE $3`;
             for(let i = 1; i < searchCols.length; i++){
@@ -37,9 +41,11 @@ function sqlForSearch(table, items, keys){
             query += ')';
             values.push(`%${search}%`);
         }
-    } else if(items.search[1]){
-        const search = items.search[1];
-        const searchCols = items.search[0];
+
+    // check if only search was passed in
+    } else if(items.search){
+        const search = items.search.searchVal;
+        const searchCols = items.search.searchCol;
         query += ` WHERE ${searchCols[0]} ILIKE $1`;
 
         for(let i = 1; i < searchCols.length; i++){

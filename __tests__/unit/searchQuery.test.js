@@ -2,18 +2,17 @@ process.env.NODE_ENV = "test";
 
 const sqlForSearch = require('../../helpers/searchQuery');
 
-
 describe("sqlForSearch",  function () {
     const table = "companies";
     const keys = ['handle', 'name'];
 
     test("it returns the correct query string and values for searching db with all three params given", function () {
         const items = {
-            "min": ["num_employees", 10],
-            "max": ["num_employees", 1000],
-            "search": [["name", "handle"], 'pp']
+            "min": {"searchCol": "num_employees", "searchVal": 10},
+            "max": {"searchCol": "num_employees", "searchVal": 1000},
+            "search": {"searchCol": ["name", "handle"],"searchVal": 'pp'}
         };
-        
+
         const result = sqlForSearch(table, items, keys);
 
         expect(result).toEqual(expect.any(Object));
@@ -24,9 +23,7 @@ describe("sqlForSearch",  function () {
     });
     test("it returns the correct query string and values for searching db with only search param given", function () {
         const items = {
-            "min": ["num_employees", NaN],
-            "max": ["num_employees", NaN],
-            "search": [["name", "handle"], 'pp']
+            "search": {"searchCol": ["name", "handle"],"searchVal": 'pp'}
         };
 
         const result = sqlForSearch(table, items, keys);
@@ -37,9 +34,7 @@ describe("sqlForSearch",  function () {
     });
     test("it returns the correct query string and values for searching db with only min param given", function () {
         const items = {
-            "min": ["num_employees", 10],
-            "max": ["num_employees", NaN],
-            "search": [["name", "handle"], undefined]
+            "min": {"searchCol": "num_employees", "searchVal": 10}
         };
 
         const result = sqlForSearch(table, items, keys);
@@ -51,9 +46,7 @@ describe("sqlForSearch",  function () {
     });
     test("it returns the correct query string and values for searching db with only max param given", function () {
         const items = {
-            "min": ["num_employees", NaN],
-            "max": ["num_employees", 1000],
-            "search": [["name", "handle"], undefined]
+            "max": {"searchCol": "num_employees", "searchVal": 1000}
         };
 
         const result = sqlForSearch(table, items, keys);
