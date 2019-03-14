@@ -26,6 +26,8 @@ describe("sqlForSearch",  function () {
     });
     test("it returns the correct query string and values for searching db with only search param given", function () {
         const items = {
+            "min": ["num_employees", NaN],
+            "max": ["num_employees", NaN],
             "search": [["name", "handle"], 'pp']
         };
 
@@ -40,7 +42,9 @@ describe("sqlForSearch",  function () {
     });
     test("it returns the correct query string and values for searching db with only min param given", function () {
         const items = {
-            "min": ["num_employees", 10]
+            "min": ["num_employees", 10],
+            "max": ["num_employees", NaN],
+            "search": [["name", "handle"], undefined]
         };
 
         const result = sqlForSearch(table, items, keys);
@@ -55,7 +59,9 @@ describe("sqlForSearch",  function () {
     });
     test("it returns the correct query string and values for searching db with only max param given", function () {
         const items = {
-            "max": ["num_employees", 1000]
+            "min": ["num_employees", NaN],
+            "max": ["num_employees", 1000],
+            "search": [["name", "handle"], undefined]
         };
 
         const result = sqlForSearch(table, items, keys);
