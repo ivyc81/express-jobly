@@ -6,7 +6,7 @@ const Company = require('../../models/company');
 
 let company;
 
-describe("Company.getAll()", async function () {
+describe("Company.getAll()", function () {
     beforeEach(async function(){
         company = await Company.create({"handle":"test", "name":"Test"});
     })
@@ -31,7 +31,7 @@ describe("Company.getAll()", async function () {
 });
 
 
-describe("Company.getSearch(params)", async function () {
+describe("Company.getSearch(params)", function () {
     beforeEach(async function(){
         company = await Company.create({"handle":"test", "name":"Test", "num_employees": 300});
 
@@ -62,7 +62,7 @@ describe("Company.getSearch(params)", async function () {
     });
 });
 
-describe("Company.create({data})", async function () {
+describe("Company.create({data})", function () {
     afterEach(async function(){
         const companies = await Company.getAll();
 
@@ -71,7 +71,7 @@ describe("Company.create({data})", async function () {
         }
     })
 
-    test("it creates new company and insert into db",async  function () {
+    test("it creates new company and insert into db", async  function () {
         const result = await Company.create({"handle":"test", "name":"Test", "num_employees": 300});
 
         expect(result).toEqual(expect.any(Object));
@@ -90,7 +90,7 @@ describe("Company.create({data})", async function () {
     });
 });
 
-describe("Company.getOne(handle)", async function () {
+describe("Company.getOne(handle)", function () {
     beforeEach(async function(){
         company = await Company.create({"handle":"test", "name":"Test"});
     })
@@ -120,7 +120,7 @@ describe("Company.getOne(handle)", async function () {
     })
 });
 
-describe("Company.update(handle, {data})", async function () {
+describe("Company.update(handle, {data})", function () {
     beforeEach(async function(){
         company = await Company.create({"handle":"test", "name":"Test"});
     })
@@ -152,7 +152,7 @@ describe("Company.update(handle, {data})", async function () {
     });
 });
 
-describe("Company.delete(handle)", async function () {
+describe("Company.delete(handle)", function () {
     beforeEach(async function(){
         company = await Company.create({"handle":"test", "name":"Test"});
     })

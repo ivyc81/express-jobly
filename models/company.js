@@ -85,11 +85,17 @@ class Company {
         return result.rows[0];
     }
 
-    static async update(handle, data) {
+    static async update(comHandle, data) {
         const table = "companies";
-        const items = data;
+        
+        // take handle out of data if exists
+        const {handle, ... items} = data;
+
+        if(handle) {
+            throw {message:"handle cannot be updated", status:400};
+        }
         const key = "handle"
-        const id = handle
+        const id = comHandle
 
         const { query, values } = sqlForPartialUpdate(table, items, key, id);
 

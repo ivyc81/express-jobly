@@ -96,10 +96,16 @@ router.patch("/:handle", async function (req, res, next) {
  */
 router.delete("/:handle", async function (req, res, next) {
     try {
-        await Company.delete(req.params.handle);
+        const results = await Company.delete(req.params.handle);
 
-        return res.json({message: "Company deleted"});
+        if(results.name){
+            return res.json({message: "Company deleted"});
+        }
+    
     } catch (err) {
+        if(err instanceof TypeError){
+            err = new ExpressError("Company not found", 400)
+        }
         return next(err);
     }
 });
