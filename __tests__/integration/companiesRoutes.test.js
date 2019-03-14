@@ -97,9 +97,9 @@ describe("POST /", function () {
             .post("/companies")
             .send({"handle":"test", "name":"Test"});
         
-        expect(res.statusCode).toEqual(500);
+        expect(res.statusCode).toEqual(400);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.error.text).toContain("duplicate key value violates unique constraint");
+        expect(res.error.text).toContain("already exists");
     });
 });
 

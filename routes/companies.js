@@ -50,10 +50,13 @@ router.post("", async function (req, res, next) {
             return next(error);
         }
 
-
         const company = await Company.create(req.body);
+        
         return res.status(201).json({ company });
     } catch (err) {
+        if(err.constraint === 'companies_pkey'){
+            err = new ExpressError(err.detail, 400);
+        }
         return next(err);
     }
 });

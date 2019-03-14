@@ -3,7 +3,7 @@ process.env.NODE_ENV = "test";
 
 const sqlForPartialUpdate = require('../../helpers/partialUpdate');
 
-describe("sqlForPartialUpdate", async function () {
+describe("sqlForPartialUpdate", function () {
     test("it returns the correct query string and values for updating db", function () {
         const table = "test";
         const items = {"col1": "val1", "col2":"val2", "_col": "_val"};
