@@ -136,9 +136,9 @@ describe("GET /:handle", function () {
     test("returns empty if no company found", async function() {
         const res = await request(app).get("/companies/apple");
 
-        expect(res.statusCode).toEqual(200);
+        expect(res.statusCode).toEqual(400);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.body.company).toEqual(undefined);
+        expect(res.error.text).toContain("not found");
     });
 });
 

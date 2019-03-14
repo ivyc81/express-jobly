@@ -52,7 +52,9 @@ router.get("", async function (req, res, next) {
             result = await Job.getAll();
         }
 
-        return res.json({ "jobs": result });
+        const { title, company_handle } = result
+
+        return res.json({ "jobs": {title, company_handle} });
 
     } catch (err) {
         return next(err);

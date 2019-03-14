@@ -41,7 +41,7 @@ class Job {
      */
 
     static async getAll(){
-        const result = await db.query(`SELECT title, company_handle FROM jobs`);
+        const result = await db.query(`SELECT id, title, company_handle FROM jobs`);
 
         return result.rows;
     }
@@ -54,7 +54,7 @@ class Job {
     static async getSearch(params){
 
         const items = {};
-        const keys = ['title', 'company_handle'];
+        const keys = ['id', 'title', 'company_handle'];
 
         // formatting for sqlForSearch
         if(params.min_salary){
@@ -80,7 +80,7 @@ class Job {
         }
 
         // getting query string and search values
-        const { query, values } = sqlForSearch('jobs', items, keys);
+        const { query, values } = sqlForSearchJob('jobs', items, keys);
 
         const result = await db.query(query, values);
         return result.rows;

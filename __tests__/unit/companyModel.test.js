@@ -3,7 +3,6 @@ process.env.NODE_ENV = "test";
 
 const Company = require('../../models/company');
 
-
 let company;
 
 afterAll(async function(){
