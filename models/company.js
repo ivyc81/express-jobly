@@ -20,14 +20,25 @@ class Company {
 
     static async getSearch(params){
 
-        const min = ["num_employees", Number(params.min_employees)];
-        const max = ["num_employees", Number(params.max_employees)];
+        const minVal = Number(params.min_employees);
+        const maxVal = Number(params.max_employees)
 
-        if(min[1] && max[1]) {
-            if(min[1] > max[1]){
+        if(params.min_employees && isNaN(minVal)){
+            throw {message:"min must be a number", status:400};
+        }
+
+        if(params.max_employees && isNaN(maxVal)){
+            throw {message:"max must be a number", status:400};
+        }
+
+        if(minVal && maxVal) {
+            if(minVal > maxVal){
                 throw {message:"min must be smaller than max", status:400};
             }
         }
+
+        const min = ["num_employees", minVal];
+        const max = ["num_employees", maxVal];
 
         const search = [["name", "handle"],params.search];
 
@@ -45,17 +56,17 @@ class Company {
 
         const result = await db.query(`
             INSERT INTO companies (
-                handle, 
-                name, 
-                num_employees, 
-                description, 
+                handle,
+                name,
+                num_employees,
+                description,
                 logo_url)
             VALUES ($1, $2, $3, $4, $5)
-            RETURNING 
-                handle, 
-                name, 
-                num_employees, 
-                description, 
+            RETURNING
+                handle,
+                name,
+                num_employees,
+                description,
                 logo_url`,
             [handle, name, num_employees, description, logo_url]
         );
