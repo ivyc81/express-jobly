@@ -5,6 +5,7 @@ const sqlForSearch = require('../helpers/searchQuery');
 const sqlForPartialUpdate = require('../helpers/partialUpdate');
 
 
+
 /** Company of the site. */
 
 class Company {
@@ -12,6 +13,9 @@ class Company {
 /**
  * get All company information that meets search term
  */
+
+    
+
     static async getAll(){
         const result = await db.query(`SELECT name, handle FROM companies`);
 
@@ -105,7 +109,7 @@ class Company {
         const key = "handle"
         const id = comHandle
 
-        const { query, values } = sqlForPartialUpdate(table, items, key, id);
+        const { query, values } = sqlForPartialUpdate(table, items, key, id, Company.safeCols);
 
         const result = await db.query(query, values);
 
@@ -122,5 +126,7 @@ class Company {
         return result.rows[0];
     }
 }
+
+Company.safeCols = ["name", "description", "num_employees", "logo_url"];
 
 module.exports = Company;
