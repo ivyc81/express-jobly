@@ -3,16 +3,15 @@ const express = require("express");
 const router = new express.Router();
 
 const ExpressError = require("../helpers/expressError");
-const Company = require("../models/company")
+const Company = require("../models/company");
+const Job= require("../models/job")
 
 const jsonschema = require("jsonschema");
-const companySearchSchema = require('../schemas/companySearch.json');
 const companyCreateSchema = require("../schemas/companyCreate.json");
 const companyEditSchema = require("../schemas/companyEdit.json");
 
 // add logging system
 // app.use(morgan("tiny"));
-
 
 /**
  * Return all companies: {companies: [companyData, ...]}
@@ -67,6 +66,9 @@ router.post("", async function (req, res, next) {
 router.get("/:handle", async function (req, res, next) {
     try {
         const company = await Company.getOne(req.params.handle);
+
+        // get all jobs in compnay
+        company.jobs = await Job.getFromCompany(req.params.handle)
 
         return res.json({ company });
     } catch (err) {
