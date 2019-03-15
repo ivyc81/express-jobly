@@ -16,7 +16,16 @@ function sqlForSearchJob(table, items, keys){
     const values = [];
     let idx = 1;
 
-    if(items.min_salary){
+    // fucntion _addClause(whereClause) {
+    //     // if
+    //     query += whereClause
+    // }
+
+    // clauses = []
+    // // if min
+    //    clauses.push(...)
+
+    if(items.min_salary){ 
         // if query doesn't end with 'WHERE', add 'AND'
         if(!query.endsWith('WHERE')){
             query += ' AND'

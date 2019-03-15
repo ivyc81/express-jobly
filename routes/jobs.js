@@ -10,9 +10,6 @@ const jsonschema = require("jsonschema");
 const jobCreateSchema = require("../schemas/jobCreate.json");
 const jobEditSchema = require("../schemas/jobEdit.json");
 
-// add logging system
-// app.use(morgan("tiny"));
-
 
 /**
  * Create a new job: {job: jobData}
@@ -28,9 +25,8 @@ router.post("", async function (req, res, next) {
         }
 
         const job = await Job.create(req.body);
-        const {id, ...returnVal} = job;
 
-        return res.status(201).json({ 'job':returnVal });
+        return res.status(201).json({ job });
     } catch (err) {
         return next(err);
     }
@@ -78,9 +74,9 @@ router.get("/:id", async function (req, res, next) {
 
         job.company = await Company.getOne(job.company_handle);
 
-        delete job.company_handle;
+        const {company_handle, ... jobData}  = job
 
-        return res.json({ job });
+        return res.json({ "job": jobData });
     } catch (err) {
         return next(err);
     }

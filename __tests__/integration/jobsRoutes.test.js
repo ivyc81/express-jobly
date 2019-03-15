@@ -8,6 +8,9 @@ const Company = require('../../models/company');
 let job;
 let company;
 
+// const COMPANY = {...}  fixme
+// { handle: "Test Comp", }
+
 beforeAll(async function() {
     company = await Company.create({"handle":"testComp", "name":"Job Test", "num_employees": 300});
 });
@@ -42,6 +45,7 @@ describe("POST /", function () {
 
         expect(res.statusCode).toEqual(201);
         expect(res.body.job).toEqual({
+            "id": expect.any(Number),
             "title": "test", 
             "salary": 300, 
             "equity":0.5, 
@@ -57,10 +61,9 @@ describe("POST /", function () {
                    "salary":300,
                    "equity": 0.5});
 
-
         expect(res.statusCode).toEqual(400);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.error.text).toContain("title");
+        expect(res.error.text).toContain("title"); // fixme
     });
 });
 
@@ -90,6 +93,8 @@ describe("GET /", function () {
             "company_handle": "testComp"
         });
         expect(res.body.jobs.length).toEqual(1);
+
+        // expect(res.body).toEqual({jobs: [{t, c}]})   fixme
     });
 
     // gets filtered jobs

@@ -115,7 +115,7 @@ class Job {
     static async update(jobId, data) {
         const table = "jobs";
 
-        // take handle out of data if exists
+        // take id out of data if exists
         const {id, ... items} = data;
 
         if(id) {
