@@ -92,6 +92,11 @@ class Job {
      */
 
     static async getOne(id) {
+
+        if(isNaN(id)){
+            throw {message: "Id must be a number", status: 400}
+        }
+        
         const result = await db.query(`
             SELECT title, salary, equity, date_posted, company_handle
             FROM jobs
@@ -130,6 +135,10 @@ class Job {
      */
 
     static async delete(id) {
+        if(isNaN(id)){
+            throw {message: "Id must be a number", status: 400}
+        }
+        
         const result = await db.query(`
             DELETE FROM jobs
             WHERE id=$1
