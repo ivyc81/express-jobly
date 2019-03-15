@@ -92,8 +92,8 @@ class Job {
      */
 
     static async getOne(id) {
-
-        if(!Number.isInteger(id)){
+        
+        if(!Number.isInteger(Number(id))){
             throw {message: "Id must be an integer", status: 400}
         }
         
@@ -135,7 +135,7 @@ class Job {
      */
 
     static async delete(id) {
-        if(!Number.isInteger(id)){
+        if(!Number.isInteger(Number(id))){
             throw {message: "Id must be an integer", status: 400}
         }
         
