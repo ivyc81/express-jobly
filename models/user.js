@@ -131,6 +131,25 @@ class User {
 
         return result.rows[0];
     }
+
+    /**
+     *  Check if user is admin
+     *  true/false
+     */
+
+    static async isAdmin(username) {
+
+        const result = await db.query(`
+            SELECT is_admin FROM users
+            WHERE username=$1`,
+            [username]);
+
+        if(result.rows[0] && result.row[0].is_admin){
+            return true;
+        }
+        return false;
+    }
+
 }
 
 User.safeCols = ["username", "first_name", "last_name", "email", "photo_url"];
