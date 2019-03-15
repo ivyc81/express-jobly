@@ -41,7 +41,13 @@ describe("POST /", function () {
                     "equity": 0.5});
 
         expect(res.statusCode).toEqual(201);
-        expect(Object.keys(res.body.job).sort()).toEqual(["company_handle", "date_posted", "equity", "salary", "title"]);
+        expect(res.body.job).toEqual({
+            "title": "test", 
+            "salary": 300, 
+            "equity":0.5, 
+            "date_posted": expect.any(String),
+            "company_handle": "testComp"
+        });
     });
 
     test("returns error if title id is given", async function() {
@@ -56,16 +62,6 @@ describe("POST /", function () {
         expect(res.body).toEqual(expect.any(Object));
         expect(res.error.text).toContain("title");
     });
-
-    // test("returns error if id already exists", async function() {
-    //     const res = await request(app)
-    //         .post("/jobs")
-    //         .send({"id":"test", "title":"Test"});
-
-    //     expect(res.statusCode).toEqual(400);
-    //     expect(res.body).toEqual(expect.any(Object));
-    //     expect(res.error.text).toContain("already exists");
-    // });
 });
 
 describe("GET /", function () {
@@ -89,7 +85,10 @@ describe("GET /", function () {
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
-        expect(Object.keys(res.body.jobs[0]).sort()).toEqual(["company_handle", "title"]);
+        expect(res.body.jobs[0]).toEqual({
+            "title": "test", 
+            "company_handle": "testComp"
+        });
         expect(res.body.jobs.length).toEqual(1);
     });
 
@@ -109,7 +108,10 @@ describe("GET /", function () {
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
-        expect(Object.keys(res.body.jobs[0]).sort()).toEqual(["company_handle", "title"]);
+        expect(res.body.jobs[0]).toEqual({
+            "title": "test", 
+            "company_handle": "testComp"
+        });
         expect(res.body.jobs.length).toEqual(1);
     });
 
@@ -140,9 +142,19 @@ describe("GET /:id", function () {
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.body.job).toEqual(expect.any(Object));
-        expect(Object.keys(res.body.job).sort()).toEqual(["company", "date_posted", "equity", "salary", "title"]);
-        expect(res.body.job.company).toEqual(expect.any(Object));
+        expect(res.body.job).toEqual({
+            "title": "test", 
+            "salary": 100, 
+            "equity":0.1, 
+            "date_posted": expect.any(String),
+            "company": {
+                "description": null,
+                "handle": "testComp",
+                "logo_url": null,
+                "name": "Job Test",
+                "num_employees": 300,
+            }
+        });
     });
 
     test("returns error if id is not integer", async function() {
@@ -174,9 +186,14 @@ describe("PATCH /:id", function () {
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.body.job).toEqual(expect.any(Object));
-        expect(res.body.job.id).toEqual(job.id);
-        expect(res.body.job.title).toEqual("updated test");
+        expect(res.body.job).toEqual({
+            "id": job.id,
+            "title": "updated test", 
+            "salary": 100, 
+            "equity":0.1, 
+            "date_posted": expect.any(String),
+            "company_handle": "testComp"
+        });
     });
 
     test("return error if inputs are invalid", async function() {
@@ -213,15 +230,6 @@ describe("DELETE /:id", function () {
         }
     });
 
-    test("returns error if job id not integer", async function() {
-        const res = await request(app)
-            .delete("/jobs/happy");
-
-        expect(res.statusCode).toEqual(400);
-        expect(res.body).toEqual(expect.any(Object));
-        expect(res.body.message).toContain("integer");
-    });
-
     test("deletes one job", async function() {
         const res = await request(app)
             .delete(`/jobs/${job.id}`);
@@ -231,4 +239,12 @@ describe("DELETE /:id", function () {
         expect(res.body.message).toEqual("Job deleted");
     });
 
+    test("returns error if job id not integer", async function() {
+        const res = await request(app)
+            .delete("/jobs/happy");
+
+        expect(res.statusCode).toEqual(400);
+        expect(res.body).toEqual(expect.any(Object));
+        expect(res.body.message).toContain("integer");
+    });
 });

@@ -39,7 +39,11 @@ describe("job.getAll()", function () {
         const result = await Job.getAll();
 
         expect(result.length).toEqual(1);
-        expect(Object.keys(result[0])).toEqual(["id", "title", "company_handle"]);
+        expect(result[0]).toEqual({
+            "id": job.id,
+            "title": "test",
+            "company_handle": "testComp"
+        });
     });
 });
 
@@ -61,7 +65,11 @@ describe("job.getSearch(params)", function () {
         const result = await Job.getSearch({"search":"test", "min_salary": 10, "min_equity": 0.01});
 
         expect(result.length).toEqual(1);
-        expect(Object.keys(result[0])).toEqual(["id", "title", "company_handle"]);
+        expect(result[0]).toEqual({
+            "id": job.id,
+            "title": "test",
+            "company_handle": "testComp"
+        });
     });
 
     test("it returns all the jobs info filtered by search and max employee",async  function () {
@@ -84,16 +92,26 @@ describe("job.create({data})", function () {
     test("it creates new job and insert into db", async  function () {
         const result = await Job.create({"title": "test", "salary": 100, "equity":0.1, "company_handle":"testComp"});
 
-        console.log("E@@#EWq", result)
         expect(result).toEqual(expect.any(Object));
         expect(result.title).toEqual("test");
-        expect(Object.keys(result)).toEqual(["title", "salary", "equity", "company_handle", "date_posted"]);
+        expect(result).toEqual({
+            "id": expect.any(Number),
+            "title": "test", 
+            "salary": 100, 
+            "equity":0.1, 
+            "date_posted": expect.any(Date),
+            "company_handle": "testComp"
+        });
 
         const getResults = await Job.getAll();
 
         expect(getResults).toEqual(expect.any(Array));
         expect(getResults[0]).toEqual(expect.any(Object));
-        expect(getResults[0].title).toEqual("test");
+        expect(getResults[0]).toEqual({
+            "id": expect.any(Number),
+            "title": "test", 
+            "company_handle": "testComp"
+        });
     });
 });
 
@@ -115,8 +133,13 @@ describe("job.getOne(id)", function () {
         const result = await Job.getOne(allJobs[0].id);
 
         expect(result).toEqual(expect.any(Object));
-        expect(result.title).toEqual("test");
-        expect(result.company_handle).toEqual("testComp");
+        expect(result).toEqual({
+            "title": "test", 
+            "salary": 100, 
+            "equity":0.1, 
+            "date_posted": expect.any(Date),
+            "company_handle": "testComp"
+        });
     });
 
     test("it doesnt return if job doesn't exist", async function(){
@@ -144,14 +167,23 @@ describe("job.update(id, {data})", function () {
         const result = await Job.update(allJobs[0].id, { "title":"updateTest", "salary": 1000});
 
         expect(result).toEqual(expect.any(Object));
-        // expect(result[0]).toEqual(expect.any(Object));
-        expect(result.title).toEqual("updateTest");
-        expect(result.salary).toEqual(1000);
+        expect(result).toEqual({
+            "id": job.id,
+            "title": "updateTest", 
+            "salary": 1000, 
+            "equity":0.1, 
+            "date_posted": expect.any(Date),
+            "company_handle": "testComp"
+        });
 
         const getResults = await Job.getAll();
+
         expect(getResults).toEqual(expect.any(Array));
-        expect(getResults[0]).toEqual(expect.any(Object));
-        expect(getResults[0].title).toEqual("updateTest");
+        expect(getResults[0]).toEqual({
+            "id": job.id,
+            "title": "updateTest", 
+            "company_handle": "testComp"
+        });
     });
 });
 
@@ -173,8 +205,10 @@ describe("job.delete(id)", function () {
         const result = await Job.delete(allJobs[0].id);
 
         expect(result).toEqual(expect.any(Object));
-        expect(result.title).toEqual("test");
-        expect(result.id).toEqual(allJobs[0].id);
+        expect(result).toEqual({
+            "id": job.id,
+            "title": "test",
+        });
 
         const getResults = await Job.getAll();
         expect(getResults).toEqual(expect.any(Array));
