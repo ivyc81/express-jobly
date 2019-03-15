@@ -93,8 +93,8 @@ class Job {
 
     static async getOne(id) {
 
-        if(isNaN(id)){
-            throw {message: "Id must be a number", status: 400}
+        if(!Number.isInteger(id)){
+            throw {message: "Id must be an integer", status: 400}
         }
         
         const result = await db.query(`
@@ -135,8 +135,8 @@ class Job {
      */
 
     static async delete(id) {
-        if(isNaN(id)){
-            throw {message: "Id must be a number", status: 400}
+        if(!Number.isInteger(id)){
+            throw {message: "Id must be an integer", status: 400}
         }
         
         const result = await db.query(`
