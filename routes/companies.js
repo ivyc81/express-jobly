@@ -5,7 +5,7 @@ const router = new express.Router();
 const ExpressError = require("../helpers/expressError");
 const Company = require("../models/company");
 const Job= require("../models/job")
-const { ensureLoggedIn, ensureAdmin } = require("../middleware");
+const { ensureLoggedIn, ensureAdmin } = require("../middleware/auth");
 
 const jsonschema = require("jsonschema");
 const companyCreateSchema = require("../schemas/companyCreate.json");

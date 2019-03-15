@@ -48,9 +48,9 @@ function ensureCorrectUser(req, res, next) {
 
 /** Middleware: Requires admin. */
 
-function ensureAdmin(req, res, next) {
+async function ensureAdmin(req, res, next) {
   try {
-    if(User.isAdmin(req.user.username)){
+    if(await User.isAdmin(req.user.username)){
       return next();
     } else {
       return next({ status: 401, message: "Unauthorized" });

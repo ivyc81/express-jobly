@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
-const ExpressError = require('../expressError');
+const ExpressError = require('../helpers/expressError');
 const jwt = require('jsonwebtoken');
 const { SECRET_KEY } = require("../config");
 

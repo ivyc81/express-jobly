@@ -144,7 +144,8 @@ class User {
             WHERE username=$1`,
             [username]);
 
-        if(result.rows[0] && result.row[0].is_admin){
+
+        if(result.rows[0] && result.rows[0].is_admin){
             return true;
         }
         return false;

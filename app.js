@@ -12,6 +12,7 @@ const app = express();
 const companiesRoutes = require("./routes/companies");
 const jobsRoutes = require("./routes/jobs");
 const usersRoutes = require("./routes/users");
+const authRoutes = require("./routes/auth")
 
 app.use(express.json());
 // add logging system
@@ -22,6 +23,7 @@ app.use(authenticateJWT);
 app.use("/companies", companiesRoutes);
 app.use("/jobs", jobsRoutes);
 app.use("/users", usersRoutes);
+app.use("/auth", authRoutes);
 
 
 /** 404 handler */

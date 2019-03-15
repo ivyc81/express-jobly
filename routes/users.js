@@ -2,6 +2,7 @@ const express = require("express");
 const router = new express.Router();
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
+const OPTIONS = {expiresIn: 60*60};
 
 const ExpressError = require("../helpers/expressError");
 const User = require("../models/user");
