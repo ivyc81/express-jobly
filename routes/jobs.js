@@ -28,8 +28,9 @@ router.post("", async function (req, res, next) {
         }
 
         const job = await Job.create(req.body);
+        const {id, ...returnVal} = job;
 
-        return res.status(201).json({ job });
+        return res.status(201).json({ 'job':returnVal });
     } catch (err) {
         return next(err);
     }
@@ -52,9 +53,12 @@ router.get("", async function (req, res, next) {
             result = await Job.getAll();
         }
 
-        const { title, company_handle } = result
+        const returnVal = result.map(function(ele){
+            const {id, ...rest} = ele;
+            return rest;
+        })
 
-        return res.json({ "jobs": {title, company_handle} });
+        return res.json({ "jobs": returnVal });
 
     } catch (err) {
         return next(err);
@@ -67,6 +71,11 @@ router.get("", async function (req, res, next) {
 router.get("/:id", async function (req, res, next) {
     try {
         const job = await Job.getOne(req.params.id);
+
+        if(!job){
+            throw new ExpressError('Job not found', 400);
+        }
+
         job.company = await Company.getOne(job.company_handle);
 
         delete job.company_handle;

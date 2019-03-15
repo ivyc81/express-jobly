@@ -22,16 +22,64 @@ afterAll(async function(){
     await Company.delete("testComp");
 });
 
+describe("POST /", function () {
+
+    afterEach(async function(){
+        const jobs = await Job.getAll();
+
+        for(let job of jobs){
+            await Job.delete(job.id);
+        }
+    });
+
+    test("creates one job", async function() {
+        const res = await request(app)
+            .post("/jobs")
+            .send({"title":"test",
+                    "company_handle":"testComp",
+                    "salary":300,
+                    "equity": 0.5});
+
+        expect(res.statusCode).toEqual(201);
+        expect(Object.keys(res.body.job).sort()).toEqual(["company_handle", "date_posted", "equity", "salary", "title"]);
+    });
+
+    test("returns error if title id is given", async function() {
+        const res = await request(app)
+            .post("/jobs")
+            .send({"company_handle":"testComp",
+                   "salary":300,
+                   "equity": 0.5});
+
+
+        expect(res.statusCode).toEqual(400);
+        expect(res.body).toEqual(expect.any(Object));
+        expect(res.error.text).toContain("title");
+    });
+
+    // test("returns error if id already exists", async function() {
+    //     const res = await request(app)
+    //         .post("/jobs")
+    //         .send({"id":"test", "title":"Test"});
+
+    //     expect(res.statusCode).toEqual(400);
+    //     expect(res.body).toEqual(expect.any(Object));
+    //     expect(res.error.text).toContain("already exists");
+    // });
+});
+
 describe("GET /", function () {
     beforeAll(async function(){
-        job = await Job.create({"title": "test", "salary": 100, "equity":0.1, "company_handle":"testComp"});
+        job = await Job.create({"title": "test",
+                                "salary": 100,
+                                "equity":0.1, "company_handle":"testComp"});
     });
 
     afterAll(async function(){
         const jobs = await Job.getAll();
 
         for(let job of jobs){
-            await job.delete(job.id);
+            await Job.delete(job.id);
         }
     });
 
@@ -41,9 +89,8 @@ describe("GET /", function () {
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
-        // expect(res.body.jobs).toEqual([FIXME]);
+        expect(Object.keys(res.body.jobs[0]).sort()).toEqual(["company_handle", "title"]);
         expect(res.body.jobs.length).toEqual(1);
-        expect(res.body.jobs[0].title).toEqual("Test");
     });
 
     // gets filtered jobs
@@ -58,64 +105,20 @@ describe("GET /", function () {
 
     // gets filtered jobs
     test("returns filtered jobs only", async function() {
-        const res = await request(app).get("/jobs?min_employees=30&max_employees=1000");
+        const res = await request(app).get("/jobs?min_salary=30&min_equity=0.01");
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.body.jobs).toEqual(expect.any(Array));
+        expect(Object.keys(res.body.jobs[0]).sort()).toEqual(["company_handle", "title"]);
         expect(res.body.jobs.length).toEqual(1);
-        expect(res.body.jobs[0].title).toEqual("Test");
     });
 
     test("returns error if invalid query input given", async function() {
-        const res = await request(app).get("/jobs?min_employees=happy");
+        const res = await request(app).get("/jobs?min_salary=happy");
 
         expect(res.statusCode).toEqual(400);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.error.text).toContain("min must be a number");
-    });
-});
-
-
-describe("POST /", function () {
-
-    afterAll(async function(){
-        const jobs = await Job.getAll();
-
-        for(let job of jobs){
-            await job.delete(job.id);
-        }
-    });
-
-    test("creates one job", async function() {
-        const res = await request(app)
-            .post("/jobs")
-            .send({"id":"test", "title":"Test", "salary":300});
-
-        expect(res.statusCode).toEqual(201);
-        expect(res.body).toEqual(expect.any(Object));
-        expect(res.body.job).toEqual(expect.any(Object));
-        expect(res.body.job.title).toEqual("Test");
-    });
-
-    test("returns error if no id is given", async function() {
-        const res = await request(app)
-            .post("/jobs")
-            .send({"title":"Test", "salary":300});
-
-        expect(res.statusCode).toEqual(400);
-        expect(res.body).toEqual(expect.any(Object));
-        expect(res.error.text).toContain("id");
-    });
-
-    test("returns error if id already exists", async function() {
-        const res = await request(app)
-            .post("/jobs")
-            .send({"id":"test", "title":"Test"});
-
-        expect(res.statusCode).toEqual(400);
-        expect(res.body).toEqual(expect.any(Object));
-        expect(res.error.text).toContain("already exists");
+        expect(res.error.text).toContain("min_salary must be a number");
     });
 });
 
@@ -128,25 +131,26 @@ describe("GET /:id", function () {
         const jobs = await Job.getAll();
 
         for(let job of jobs){
-            await job.delete(job.id);
+            await Job.delete(job.id);
         }
     });
 
     test("returns one job", async function() {
-        const res = await request(app).get("/jobs/test");
+        const res = await request(app).get(`/jobs/${job.id}`);
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
         expect(res.body.job).toEqual(expect.any(Object));
-        expect(res.body.job.title).toEqual("Test");
+        expect(Object.keys(res.body.job).sort()).toEqual(["company", "date_posted", "equity", "salary", "title"]);
+        expect(res.body.job.company).toEqual(expect.any(Object));
     });
 
-    test("returns empty if no job found", async function() {
+    test("returns error if id is not integer", async function() {
         const res = await request(app).get("/jobs/apple");
 
-        expect(res.statusCode).toEqual(400);
+        expect(res.statusCode).toEqual(500);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.error.text).toContain("not found");
+        expect(res.error.text).toContain("integer");
     });
 });
 
@@ -165,14 +169,14 @@ describe("PATCH /:id", function () {
 
     test("updates a job", async function() {
         const res = await request(app)
-            .patch("/jobs/test")
-            .send({"description": "updated test"});
+            .patch(`/jobs/${job.id}`)
+            .send({"title": "updated test"});
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
         expect(res.body.job).toEqual(expect.any(Object));
-        expect(res.body.job.title).toEqual("Test");
-        expect(res.body.job.description).toEqual("updated test");
+        expect(res.body.job.id).toEqual(job.id);
+        expect(res.body.job.title).toEqual("updated test");
     });
 
     test("return error if inputs are invalid", async function() {
@@ -182,7 +186,7 @@ describe("PATCH /:id", function () {
 
         expect(res.statusCode).toEqual(400);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.error.text).toContain("not of a type(s) number");
+        expect(res.error.text).toContain("not of a type(s) integer");
     });
 
     test("return error if inputs are invalid", async function() {
@@ -209,22 +213,22 @@ describe("DELETE /:id", function () {
         }
     });
 
-    test("returns error if job not found", async function() {
+    test("returns error if job id not integer", async function() {
         const res = await request(app)
             .delete("/jobs/happy");
 
-        expect(res.statusCode).toEqual(400);
+        expect(res.statusCode).toEqual(500);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.body.message).toEqual("job not found");
+        expect(res.body.message).toContain("integer");
     });
 
     test("deletes one job", async function() {
         const res = await request(app)
-            .delete("/jobs/test");
+            .delete(`/jobs/${job.id}`);
 
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual(expect.any(Object));
-        expect(res.body.message).toEqual("job deleted");
+        expect(res.body.message).toEqual("Job deleted");
     });
 
 });
