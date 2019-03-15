@@ -16,15 +16,15 @@ const userEditSchema = require("../schemas/userEdit.json");
  */
 router.post("", async function (req, res, next) {
     try {
-        const results = jsonschema.valusernameate(req.body, userCreateSchema);
+        const results = jsonschema.validate(req.body, userCreateSchema);
 
-        if (!results.valusername) {
+        if (!results.valid) {
             let errList = results.errors.map(err => err.stack);
             let error = new ExpressError(errList, 400);
             return next(error);
         }
 
-        const user = await User.create(req.body);
+        const user = await User.register(req.body);
 
         return res.status(201).json({ user });
     } catch (err) {
@@ -75,9 +75,9 @@ router.get("/:username", async function (req, res, next) {
  */
 router.patch("/:username", async function (req, res, next) {
     try {
-        const results = jsonschema.valusernameate(req.body, userEditSchema);
+        const results = jsonschema.validate(req.body, userEditSchema);
 
-        if (!results.valusername) {
+        if (!results.valid) {
             let errList = results.errors.map(err => err.stack);
             let error = new ExpressError(errList, 400);
             return next(error);
@@ -98,7 +98,7 @@ router.delete("/:username", async function (req, res, next) {
     try {
         const results = await User.delete(req.params.username);
 
-        if(results.title){
+        if(results.username){
             return res.json({message: "user deleted"});
         }
 

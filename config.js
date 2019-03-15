@@ -21,9 +21,12 @@ if (process.env.NODE_ENV === "test") {
   DB_URI  = process.env.DATABASE_URL || 'jobly';
 }
 
+const BCRYPT_WORK_ROUNDS = 10;
+
 
 module.exports = {
   SECRET_KEY,
   PORT,
   DB_URI,
+  BCRYPT_WORK_ROUNDS
 };

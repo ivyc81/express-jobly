@@ -5,7 +5,7 @@ const sqlForSearchJob = require('../helpers/searchQueryJob');
 const sqlForPartialUpdate = require('../helpers/partialUpdate');
 
 
-/** Company of the site. */
+/** Job of the site. */
 
 class Job {
 
@@ -92,11 +92,11 @@ class Job {
      */
 
     static async getOne(id) {
-        
+
         if(!Number.isInteger(Number(id))){
             throw {message: "Id must be an integer", status: 400}
         }
-        
+
         const result = await db.query(`
             SELECT title, salary, equity, date_posted, company_handle
             FROM jobs
@@ -138,7 +138,7 @@ class Job {
         if(!Number.isInteger(Number(id))){
             throw {message: "Id must be an integer", status: 400}
         }
-        
+
         const result = await db.query(`
             DELETE FROM jobs
             WHERE id=$1
