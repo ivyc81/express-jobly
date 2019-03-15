@@ -148,7 +148,7 @@ describe("GET /:id", function () {
     test("returns error if id is not integer", async function() {
         const res = await request(app).get("/jobs/apple");
 
-        expect(res.statusCode).toEqual(500);
+        expect(res.statusCode).toEqual(400);
         expect(res.body).toEqual(expect.any(Object));
         expect(res.error.text).toContain("integer");
     });
@@ -217,7 +217,7 @@ describe("DELETE /:id", function () {
         const res = await request(app)
             .delete("/jobs/happy");
 
-        expect(res.statusCode).toEqual(500);
+        expect(res.statusCode).toEqual(400);
         expect(res.body).toEqual(expect.any(Object));
         expect(res.body.message).toContain("integer");
     });
