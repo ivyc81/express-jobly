@@ -43,6 +43,25 @@ class User {
     }
 
 
+    /** Authenticate: is this username/password valid? Returns boolean. */
+
+    static async authenticate(username, password) {
+        const result = await db.query(
+        `SELECT password FROM users
+        WHERE username=$1`,
+        [username]);
+
+        const user = result.rows[0];
+        if(user){
+            return await bcrypt.compare(password, user.password);
+        }
+
+        return false;
+
+        // return user && await bcrypt.compare(pasword, user.password)
+    }
+
+
     /**
      * get All user information [{username, first_name, last_name, email},...]
      */

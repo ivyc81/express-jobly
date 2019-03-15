@@ -1,10 +1,14 @@
 const express = require("express");
 const router = new express.Router();
+const jwt = require("jsonwebtoken");
+const { SECRET_KEY } = require("../config");
 
 const ExpressError = require("../helpers/expressError");
 const User = require("../models/user");
 // const Job = require("../models/job");
 // const Company = require("../models/company");
+
+const { ensureLoggedIn, ensureCorrectUser } = require("../middleware/auth");
 
 const jsonschema = require("jsonschema");
 const userCreateSchema = require("../schemas/userCreate.json");
@@ -25,8 +29,10 @@ router.post("", async function (req, res, next) {
         }
 
         const user = await User.register(req.body);
+        let token = jwt.sign({"username": user.username}, SECRET_KEY, OPTIONS);
 
-        return res.status(201).json({ user });
+        return res.json({token})
+
     } catch (err) {
         return next(err);
     }
@@ -56,7 +62,7 @@ router.get("", async function (req, res, next) {
 /**
  * Get one user with username: {user: userData}
  */
-router.get("/:username", async function (req, res, next) {
+router.get("/:username", ensureLoggedIn, ensureCorrectUser, async function (req, res, next) {
     try {
         const user = await User.getOne(req.params.username);
 
@@ -73,7 +79,7 @@ router.get("/:username", async function (req, res, next) {
 /**
  * Update a user: {user: userData}
  */
-router.patch("/:username", async function (req, res, next) {
+router.patch("/:username", ensureLoggedIn, ensureCorrectUser,async function (req, res, next) {
     try {
         const results = jsonschema.validate(req.body, userEditSchema);
 
@@ -94,7 +100,7 @@ router.patch("/:username", async function (req, res, next) {
 /**
  * Delete a user: {message: "user deleted"}
  */
-router.delete("/:username", async function (req, res, next) {
+router.delete("/:username", ensureLoggedIn, ensureCorrectUser,async function (req, res, next) {
     try {
         const results = await User.delete(req.params.username);
 
