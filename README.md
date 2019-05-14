@@ -1,5 +1,5 @@
 # Jobly (backend)
-An server side app with a RESTful API.<br/>
+A server side app with a RESTful API.<br/>
 
 ## Technologies
 * JavaScript
@@ -15,8 +15,8 @@ An server side app with a RESTful API.<br/>
 ## To start
 Clone repo and create a local folder:
 ```
-git clone git@github.com:ivyc81/react-jobly.git
-cd react-jobly
+git clone git@github.com:ivyc81/express-jobly.git
+cd express-jobly
 creatdb jobly
 psql jobly < data.sql
 npm install
