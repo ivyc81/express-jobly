@@ -20,7 +20,7 @@ cd express-jobly
 creatdb jobly
 psql jobly < data.sql
 npm install
-nodemon
+nodemon server.js
 ```
 
 ## To run tests
